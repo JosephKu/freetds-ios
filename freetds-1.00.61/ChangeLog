@@ -1,0 +1,413 @@
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sun Aug 7 10:57:57 2016 +0100
+
+    Fix small memory leak
+
+    Silly mistake caused a duplicate line.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri Jul 22 11:23:50 2016 +0100
+
+    Reduce indentation level in pool_user_read
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri Jul 22 11:25:24 2016 +0100
+
+    Remove warning compiling with clang
+
+    clang complains about signed shift not portable.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri Jul 22 10:27:08 2016 +0100
+
+    Remove some string overflows from VMS code
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri Jul 22 10:29:19 2016 +0100
+
+    pool: Avoid to overwrite packet if not entirely written
+
+    This can happen if packet is not entirely written to server after
+    being read from client.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Mon Jul 18 12:09:07 2016 +0100
+
+    Extends cs_dt_crack to support newer types
+
+    This add a new cs_dt_crack_v2 ABI function (cs_dt_crack API is redirected
+    to it using a preprocessor macro). This to make the extension of
+    CS_DATEREC more safe (version of 1.0 could call cs_dt_crack with
+    CS_BIGDATETIME_TYPE/CS_BIGTIME_TYPE without having these fields written
+    which would possible cause memory corruption on version compiled with
+    these fields missing).
+    This make sqsh compile and work with newer date/time types.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Mon Jul 18 09:38:13 2016 +0100
+
+    Make AppVeyor build with OpenSSL enabled
+
+    CMake was not finding OpenSSL.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Tue Jun 21 21:45:21 2016 +0100
+
+    attempt multiple connections if availability groups are detected
+
+    This allows the server to start up properly.
+    Connection are retried after 1 seconds for maximum 10 times.
+    The global timeout still is in place.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Mon Jun 27 12:59:07 2016 +0100
+
+    Fix NUMERIC column for bcp native format
+
+    Prefix was not handled correctly.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sun Jun 26 08:30:08 2016 +0100
+
+    Fix freebcp -E (identity columns)
+
+    An additional query prevented code to handle correctly column types.
+
+Author: Manfroi Fabrice <fm@4js.com>
+Date:   Wed Jun 22 16:33:53 2016 +0200
+
+    Fix build error on AIX 6.1 / 7.1 / 7.2
+
+    tls.c:719: error: 'AF_INET6' undeclared (first use in this function)
+    tls.c:719: error: (Each undeclared identifier is reported only once
+    tls.c:719: error: for each function it appears in.)
+    tls.c:722: error: 'AF_INET' undeclared (first use in this function)
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Tue Jun 21 21:41:23 2016 +0100
+
+    enable again tds_gettime_ms
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Tue Jun 21 21:38:03 2016 +0100
+
+    fix possible file descriptor leak
+
+    This was introduced quite recently
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Mon Jun 20 14:46:57 2016 +0100
+
+    attempt to connect to any address at a time to support availability groups
+
+    If availability groups are available the servers may be listening for
+    connection based on state.
+    Try all IPs to get the good one. The attempts are made in parallel.
+    There is still no retry to wait a server available on switch time.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sat Jun 18 21:08:17 2016 +0100
+
+    Fix internal result state in dbcanquery
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sat Jun 18 21:09:17 2016 +0100
+
+    Test dbcanquery behaviour
+
+    Function should discard all row results.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sat Jun 18 13:27:56 2016 +0100
+
+    Avoid to strip spaces from procedure text.
+
+    NTBSTRINGBIND strip spaces at the end.
+    Using STRINGBIND with 0 size cause string to be just NUL terminated.
+    The 0 would lead to a possible overflow however we check the column
+    len before doing the bind to avoid such possibility.
+
+    Original patch from Nem W Schlecht.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri Jun 17 22:33:24 2016 +0100
+
+    Remove redundant check in dbcanquery
+
+    Check already in CHECK_CONN.
+
+Author: Nem W Schlecht <nem@emptec.com>
+Date:   Fri Jun 17 22:38:12 2016 +0100
+
+    Avoid crash on connection error and report an error instead
+
+    Patch from Nem W Schlecht.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sun Jun 12 21:14:30 2016 +0100
+
+    remove old ChangeLog files
+
+    ChangeLogs were not updated, now git log is used
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sat Jun 11 09:33:56 2016 +0100
+
+    remove ODBCNODMLIBAPP automake macro
+
+    Avoid using two macros for the same purpose using absolute path.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sun Jun 12 21:09:43 2016 +0100
+
+    allows to specify 5.0 as tds protocol version during configure
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sat Jun 11 09:32:43 2016 +0100
+
+    do not compile as bundle under Mac OS X is --with-odbc-nodm is specified
+
+    In this case the driver will be used as a dynamic library (not loaded
+    dynamically) so compile as such.
+    In case a DM is used unit tests/application will link to the DM which
+    will load the driver (requiring to be a module on old Mac OS X versions).
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri Jun 10 11:45:44 2016 +0100
+
+    replace BYTE with unsigned char in ODBC files
+
+    BYTE is not supported on some platforms.
+    This fixes Mac OS X build.
+    unixODBC headers files and Windows platform define it.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sun Jun 5 00:20:06 2016 +0100
+
+    Add some missing include to fisql utility
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sun Jun 5 00:06:55 2016 +0100
+
+    Support all types in dbvarylen
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sun Jun 5 00:04:46 2016 +0100
+
+    Remove some possible switch warnings
+
+    Handle all cases so some compilers does not give warnings.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sun Jun 5 00:02:19 2016 +0100
+
+    Remove a warning
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sat Jun 4 23:42:07 2016 +0100
+
+    Remove duplicate check
+
+    Check for dbproc was already done in dbacolptr
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sat Jun 4 23:41:13 2016 +0100
+
+    Reuse code to return a dblib type from a TDSCOLUMN
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri May 27 06:54:04 2016 +0100
+
+    use bjoern utf8 decode function to convert from utf8
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Tue May 31 18:52:01 2016 +0100
+
+    avoid using a sed in test script
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Mon May 30 18:43:54 2016 +0100
+
+    move threadsafe.c from tds to utils
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Mon May 30 18:12:29 2016 +0100
+
+    output some more error information on tests
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sun May 29 20:31:29 2016 +0100
+
+    fix nightly test problem
+
+    Part of the code was failing due to error in grab_logs function.
+    As set -e is used any error cause abortion.
+    Remove the error if an executable for a .log file is not present.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri May 27 07:12:27 2016 +0100
+
+    minor style change
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri May 27 10:59:03 2016 +0100
+
+    remove a warning compiling under Windows
+
+    _strdup should be called instead of strdup.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri May 27 06:53:25 2016 +0100
+
+    add bjoern-utf8 files
+
+    These files implements UTF-8 decoding algorithm described in
+    http://bjoern.hoehrmann.de/utf-8/decoder/dfa/
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri May 27 06:52:23 2016 +0100
+
+    add missing header to passarg test
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri May 27 06:41:39 2016 +0100
+
+    fix vms build due to file move
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Fri May 27 06:40:56 2016 +0100
+
+    move tds_gethostbyname_r to getaddrinfo replacement
+
+    This was an old function used to get the address of an host.
+    Was used before supporting IPv6 and getaddrinfo to have a reentrant
+    gethostbyname.
+    Now is used only in systems where getaddrinfo is not present to
+    implement a getaddrinfo replacement function.
+    So code is moved in getaddrinfo replacement file and function made
+    static.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Thu May 26 23:09:22 2016 +0100
+
+    move win_mutex from replacements to utils
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Thu May 26 22:43:06 2016 +0100
+
+    move condition from replacements to utils
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Wed May 25 18:55:16 2016 +0100
+
+    move passarg from replacements to utils
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Wed May 25 18:26:41 2016 +0100
+
+    move challenge test from tds to utils
+
+    Test was testing md4/md5/des which now are in utils.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Wed May 25 17:26:24 2016 +0100
+
+    move sleep.c from replacements to utils
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Wed May 25 17:38:56 2016 +0100
+
+    reformat Makefiles to make easier to move files between them
+
+    Use a single file per line so moving line cause only line
+    removed or added.
+    This make patches more easier to manage.
+    Don't use tab to indent.
+    Don't indent vertically.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Wed May 25 17:11:57 2016 +0100
+
+    add missing cmake file to distribution
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Wed May 25 01:25:38 2016 +0100
+
+    removed unused parameter from tds_copy_stream
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Wed May 25 01:39:52 2016 +0100
+
+    document missing break in code
+
+    This fixed Coverity CID 90723
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Wed May 25 00:40:50 2016 +0100
+
+    move hmac_md5.c file from src/tds to src/utils
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Wed May 25 00:30:22 2016 +0100
+
+    add utils directory
+
+    New directory to put any utility not depending on tds protocol and
+    not replacing any already existing function.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Tue May 24 23:48:33 2016 +0100
+
+    fix strange indentation in configure.ac file
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Tue May 24 23:48:02 2016 +0100
+
+    remove some dependency from tds.h header
+
+    Some files are not really dependent from libTDS stuff.
+    Avoid to include unneeded headers.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Sat May 21 14:59:51 2016 +0100
+
+    Fix compilation for systems not C99 compatible
+
+    (u)int8_t types were not defined.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Wed May 4 21:14:44 2016 +0100
+
+    optimise a bit conversions to UTF-16 in trivial iconv
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Wed May 4 21:13:59 2016 +0100
+
+    support some improperly coded utf-16 with trivial iconv
+
+    Support wrong encoding in the range U+D800-U+DFFF.
+    Many supports these encoding even if wrong.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Tue May 3 08:11:30 2016 +0100
+
+    start using C99 int types
+
+    Do not use TDS int types for stuff not strictly related to TDS
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Mon May 2 22:58:39 2016 +0100
+
+    try to detect float type using float.h constants
+
+    This make the installed header file more portable.
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Mon May 2 23:06:12 2016 +0100
+
+    detect int types using stdint.h if available
+
+Author: Frediano Ziglio <freddy77@gmail.com>
+Date:   Wed May 18 21:30:22 2016 +0100
+
+    start development release

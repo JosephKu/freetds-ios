@@ -1,0 +1,5 @@
+<map id="tds_socket_set_nonblocking" name="tds_socket_set_nonblocking">
+<area shape="rect" id="node2" href="$a00392.html#gab604dd1d75afa8f852d1a6ee0b681974" title="Setup the socket and attempt a connection. " alt="" coords="277,5,409,32"/>
+<area shape="rect" id="node3" href="$a00392.html#ga954dcc3b0332fa9448d9edf59c0fe439" title="Get port of all instances. " alt="" coords="253,56,432,83"/>
+<area shape="rect" id="node4" href="$a00392.html#gac23c12ccb3e8599f10f305e993e216f6" title="Get port of given instance. " alt="" coords="257,107,428,133"/>
+</map>
